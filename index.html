@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<<link rel="icon" type="image/png" href="img.png">
->
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text to Handwritten Converter</title>
@@ -9,31 +8,15 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Dancing+Script:wght@700&family=Indie+Flower&family=Kalam:wght@400;700&family=Permanent+Marker&family=Shadows+Into+Light&family=Zeyada&family=Reenie+Beanie&family=Courgette&family=Satisfy&display=swap');
         
-        body {body {
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    color: white;
-}
-button {
-    background: #4a00e0;
-    color: white;
-}
-button:hover {
-    background: #6a11cb;
-}
-
+        body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background-color: #4B0082;
+            color: white;
             padding: 20px;
         }
         h1 {
-            color: #333;
-        }
-        #logo {
-            width: 150px;
-            height: auto;
-            display: block;
-            margin: 0 auto 20px;
+            color: #FFD700;
         }
         textarea {
             width: 90%;
@@ -53,12 +36,12 @@ button:hover {
         }
         button {
             cursor: pointer;
-            background-color: #28a745;
-            color: white;
+            background-color: #FFD700;
+            color: black;
             border: none;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #DAA520;
         }
         #preview {
             margin-top: 20px;
@@ -66,12 +49,25 @@ button:hover {
             font-size: 30px;
             border: 1px solid #ccc;
             background-color: white;
+            color: black;
             white-space: pre-wrap;
+        }
+        #signatureCanvas {
+            border: 2px dashed #000;
+            background: white;
+            margin-top: 10px;
+            touch-action: none;
+        }
+        footer {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #2E0854;
+            color: white;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <img src="logo.png" alt="Website Logo" id="logo">
     <button onclick="location.href='index.html'">Home</button>
     <h1>Text to Handwritten Converter</h1>
     <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
@@ -100,6 +96,13 @@ button:hover {
     <button onclick="downloadPDF()">Download as PDF</button>
     <h2>Preview</h2>
     <div id="preview">Your handwritten text will appear here</div>
+    <h2>Signature</h2>
+    <canvas id="signatureCanvas" width="400" height="200"></canvas>
+    <button onclick="clearSignature()">Clear Signature</button>
+    <button onclick="downloadSignature()">Download Signature</button>
+    <footer>
+        &copy; 2024 HARAPPS. All rights reserved.
+    </footer>
     <script>
         function updatePreview() {
             let text = document.getElementById("textInput").value;
