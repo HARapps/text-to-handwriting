@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text to Handwritten Converter</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Dancing+Script:wght@700&family=Indie+Flower&family=Kalam:wght@400;700&family=Permanent+Marker&family=Shadows+Into+Light&family=Zeyada&family=Reenie+Beanie&family=Courgette&family=Satisfy&display=swap');
 
         body {
             font-family: Arial, sans-serif;
@@ -13,71 +13,129 @@
             background-color: #f4f4f4;
             padding: 20px;
         }
-
         h1 {
             color: #333;
         }
-
         textarea {
             width: 80%;
             height: 150px;
-            font-size: 16px;
             padding: 10px;
+            font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            resize: none;
+            margin-bottom: 10px;
         }
-
-        button {
-            margin-top: 10px;
-            padding: 10px 20px;
+        select, button {
             font-size: 16px;
-            border: none;
-            background-color: #333;
-            color: white;
+            padding: 10px;
+            margin: 5px;
             border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
             cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
         }
-
         button:hover {
-            background-color: #555;
+            background-color: #218838;
         }
-
-        .output {
+        canvas {
+            display: none;
+        }
+        #preview {
             margin-top: 20px;
             padding: 20px;
-            font-size: 24px;
-            font-family: 'Patrick Hand', cursive;
-            white-space: pre-line;
-            border: 1px solid #ddd;
-            background-color: white;
+            font-size: 30px;
+            border: 1px solid #ccc;
             display: inline-block;
-            max-width: 80%;
+            background-color: white;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
-
     <h1>Text to Handwritten Converter</h1>
-    <textarea id="userText" placeholder="Enter your text here..."></textarea>
-    <br>
-    <button onclick="convertText()">Convert to Handwriting</button>
-    <br>
-    <div id="handwrittenText" class="output"></div>
+    <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
+    
+    <label for="fontSelect">Choose Handwriting Font:</label>
+    <select id="fontSelect" onchange="updatePreview()">
+        <option value="Patrick Hand">Patrick Hand</option>
+        <option value="Dancing Script">Dancing Script</option>
+        <option value="Indie Flower">Indie Flower</option>
+        <option value="Kalam">Kalam</option>
+        <option value="Permanent Marker">Permanent Marker</option>
+        <option value="Shadows Into Light">Shadows Into Light</option>
+        <option value="Zeyada">Zeyada</option>
+        <option value="Reenie Beanie">Reenie Beanie</option>
+        <option value="Courgette">Courgette</option>
+        <option value="Satisfy">Satisfy</option>
+    </select>
+    
+    <label for="colorSelect">Choose Ink Color:</label>
+    <select id="colorSelect" onchange="updatePreview()">
+        <option value="black">Black</option>
+        <option value="blue">Blue</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="purple">Purple</option>
+        <option value="brown">Brown</option>
+        <option value="orange">Orange</option>
+        <option value="pink">Pink</option>
+        <option value="gray">Gray</option>
+        <option value="teal">Teal</option>
+    </select>
+    
+    <button onclick="convertToImage()">Download as Image</button>
+    <canvas id="canvas"></canvas>
+    
+    <h2>Preview</h2>
+    <div id="preview">Your handwritten text will appear here</div>
 
     <script>
-        function convertText() {
-            let inputText = document.getElementById("userText").value;
-            let outputDiv = document.getElementById("handwrittenText");
+        function updatePreview() {
+            let text = document.getElementById("textInput").value;
+            let font = document.getElementById("fontSelect").value;
+            let color = document.getElementById("colorSelect").value;
+            let preview = document.getElementById("preview");
 
-            if (inputText.trim() === "") {
-                outputDiv.innerHTML = "Please enter some text!";
-                return;
-            }
+            preview.style.fontFamily = `'${font}', cursive`;
+            preview.style.color = color;
+            preview.innerText = text ? text : "Your handwritten text will appear here";
+        }
 
-            outputDiv.innerText = inputText;
+        function convertToImage() {
+            let text = document.getElementById("textInput").value;
+            let font = document.getElementById("fontSelect").value;
+            let color = document.getElementById("colorSelect").value;
+            let canvas = document.getElementById("canvas");
+            let ctx = canvas.getContext("2d");
+
+            canvas.width = 1000;
+            canvas.height = 400;
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = `40px '${font}', cursive`;
+            ctx.fillStyle = color;
+            ctx.textBaseline = "top";
+
+            let lines = text.split('\n');
+            let y = 50;
+            lines.forEach(line => {
+                ctx.fillText(line, 50, y);
+                y += 50;
+            });
+
+            let link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "handwritten_text.png";
+            link.click();
         }
     </script>
-
 </body>
 </html>
+
+       
+           
