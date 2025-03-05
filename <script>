@@ -1,0 +1,6 @@
+function downloadSignature() {
+    let link = document.createElement("a");
+    link.href = signatureCanvas.toDataURL("image/png");
+    link.download = "signature.png";
+    link.click();
+}
