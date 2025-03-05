@@ -1,6 +1,66 @@
-function downloadSignature() {
+<script>
+function updatePreview() {
+    let text = document.getElementById("textInput").value;
+    let font = document.getElementById("fontSelect").value;
+    let color = document.getElementById("colorSelect").value;
+    let preview = document.getElementById("preview");
+    preview.style.fontFamily = `'${font}', cursive`;
+    preview.style.color = color;
+    preview.innerText = text ? text : "Your handwritten text will appear here";
+}
+
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF();
+    let text = document.getElementById("textInput").value;
+    doc.text(text, 10, 10);
+    doc.save("handwritten_text.pdf");
+}
+
+// Signature Pad
+let canvas = document.getElementById("signatureCanvas");
+let ctx = canvas.getContext("2d");
+let drawing = false;
+
+canvas.addEventListener("touchstart", startDrawing);
+canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchend", stopDrawing);
+canvas.addEventListener("mousedown", startDrawing);
+canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("mouseup", stopDrawing);
+
+function startDrawing(event) {
+    drawing = true;
+    draw(event);
+}
+
+function stopDrawing() {
+    drawing = false;
+    ctx.beginPath();
+}
+
+function draw(event) {
+    if (!drawing) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
+    let rect = canvas.getBoundingClientRect();
+    let x = (event.clientX || event.touches[0].clientX) - rect.left;
+    let y = (event.clientY || event.touches[0].clientY) - rect.top;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+}
+
+function clearSignature() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function saveSignature() {
     let link = document.createElement("a");
-    link.href = signatureCanvas.toDataURL("image/png");
+    link.href = canvas.toDataURL("image/png");
     link.download = "signature.png";
     link.click();
 }
+</script>
