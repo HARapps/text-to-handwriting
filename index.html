@@ -41,9 +41,6 @@
         button:hover {
             background-color: #218838;
         }
-        canvas {
-            display: none;
-        }
         #preview {
             margin-top: 20px;
             padding: 20px;
@@ -95,14 +92,13 @@
     <button onclick="convertToImage()">Download as Image</button>
     <button onclick="downloadPDF()">Download as PDF</button>
     
-    <canvas id="canvas"></canvas>
-    
     <h2>Preview</h2>
     <div id="preview">Your handwritten text will appear here</div>
     
     <h2>Signature</h2>
     <canvas id="signatureCanvas" width="400" height="200"></canvas>
     <button onclick="clearSignature()">Clear Signature</button>
+    <button onclick="downloadSignature()">Download Signature</button>
     
     <script>
         function updatePreview() {
@@ -117,28 +113,20 @@
         }
 
         function convertToImage() {
+            let canvas = document.createElement("canvas");
+            let ctx = canvas.getContext("2d");
             let text = document.getElementById("textInput").value;
             let font = document.getElementById("fontSelect").value;
             let color = document.getElementById("colorSelect").value;
-            let canvas = document.getElementById("canvas");
-            let ctx = canvas.getContext("2d");
-
+            
             canvas.width = 1000;
             canvas.height = 400;
             ctx.fillStyle = "#fff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.font = `40px '${font}', cursive`;
             ctx.fillStyle = color;
-            ctx.textBaseline = "top";
-
-            let lines = text.split('\n');
-            let y = 50;
-            lines.forEach(line => {
-                ctx.fillText(line, 50, y);
-                y += 50;
-            });
-
+            ctx.fillText(text, 50, 50);
+            
             let link = document.createElement("a");
             link.href = canvas.toDataURL("image/png");
             link.download = "handwritten_text.png";
@@ -158,7 +146,10 @@
         let drawing = false;
 
         signatureCanvas.addEventListener("mousedown", () => drawing = true);
-        signatureCanvas.addEventListener("mouseup", () => drawing = false);
+        signatureCanvas.addEventListener("mouseup", () => {
+            drawing = false;
+            ctx.beginPath();
+        });
         signatureCanvas.addEventListener("mousemove", draw);
 
         function draw(event) {
@@ -174,11 +165,14 @@
 
         function clearSignature() {
             ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
-        <h2>Signature</h2>
-<canvas id="signatureCanvas" width="400" height="200"></canvas>
-<button onclick="clearSignature()">Clear Signature</button>
-<button onclick="downloadSignature()">Download Signature</button>
+        }
 
+        function downloadSignature() {
+            let link = document.createElement("a");
+            link.href = signatureCanvas.toDataURL("image/png");
+            link.download = "signature.png";
+            link.click();
+        }
     </script>
 </body>
 </html>
