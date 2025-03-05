@@ -3,153 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text to Handwritten Converter</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <title>About Me</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Dancing+Script:wght@700&family=Indie+Flower&family=Kalam:wght@400;700&family=Permanent+Marker&family=Shadows+Into+Light&family=Zeyada&family=Reenie+Beanie&family=Courgette&family=Satisfy&display=swap');
-        
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #4B0082;
+            background-color: #f4f4f4;
+            color: #333;
             padding: 20px;
-            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #fff;
+            color: #6a0dad;
         }
-        textarea {
-            width: 90%;
-            height: 150px;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        select, button {
-            font-size: 16px;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            cursor: pointer;
-            background-color: #28a745;
-            color: white;
-            border: none;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        #preview {
-            margin-top: 20px;
-            padding: 20px;
-            font-size: 30px;
-            border: 1px solid #ccc;
-            background-color: white;
-            white-space: pre-wrap;
-            color: black;
-        }
-        #signatureCanvas {
-            border: 2px dashed #000;
-            background: white;
-            margin-top: 10px;
-            touch-action: none;
-        }
-        nav {
-            background: #6a0dad;
-            padding: 10px;
-        }
-        nav a {
-            color: white;
-            margin: 10px;
-            text-decoration: none;
+        p {
             font-size: 18px;
+            line-height: 1.6;
+        }
+        .profile-img {<img src="https://imgur.com/a/5dUbnlP" alt="Logo">
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="a4.html">A4 Page</a>
-        <a href="a3.html">A3 Page</a>
-        <a href="notebook.html">Notebook Page</a>
-        <a href="ipad.html">iPad Notes</a>
-        <a href="grid.html">Grid Page</a>
-        <a href="lined.html">Lined Page</a>
-        <a href="blank.html">Blank Page</a>
-    </nav>
-    <h1>Text to Handwritten Converter</h1>
-    <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
-    <label for="fontSelect">Choose Handwriting Font:</label>
-    <select id="fontSelect" onchange="updatePreview()">
-        <option value="Patrick Hand">Patrick Hand</option>
-        <option value="Dancing Script">Dancing Script</option>
-        <option value="Indie Flower">Indie Flower</option>
-        <option value="Kalam">Kalam</option>
-        <option value="Permanent Marker">Permanent Marker</option>
-        <option value="Shadows Into Light">Shadows Into Light</option>
-        <option value="Zeyada">Zeyada</option>
-        <option value="Reenie Beanie">Reenie Beanie</option>
-        <option value="Courgette">Courgette</option>
-        <option value="Satisfy">Satisfy</option>
-    </select>
-    <label for="colorSelect">Choose Ink Color:</label>
-    <select id="colorSelect" onchange="updatePreview()">
-        <option value="black">Black</option>
-        <option value="blue">Blue</option>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="purple">Purple</option>
-    </select>
-    <button onclick="convertToImage()">Download as Image</button>
-    <button onclick="downloadPDF()">Download as PDF</button>
-    <h2>Preview</h2>
-    <div id="preview">Your handwritten text will appear here</div>
-    <h2>Signature</h2>
-    <canvas id="signatureCanvas" width="400" height="200"></canvas>
-    <button onclick="clearSignature()">Clear Signature</button>
-    <button onclick="downloadSignature()">Download Signature</button>
-    <p>&copy; 2025 HARAPPS. All rights reserved.</p>
-    <script>
-        function updatePreview() {
-            let text = document.getElementById("textInput").value;
-            let font = document.getElementById("fontSelect").value;
-            let color = document.getElementById("colorSelect").value;
-            let preview = document.getElementById("preview");
-            preview.style.fontFamily = `'${font}', cursive`;
-            preview.style.color = color;
-            preview.innerText = text ? text : "Your handwritten text will appear here";
-        }
-        function convertToImage() {
-            let canvas = document.createElement("canvas");
-            let ctx = canvas.getContext("2d");
-            let text = document.getElementById("textInput").value;
-            let font = document.getElementById("fontSelect").value;
-            let color = document.getElementById("colorSelect").value;
-            canvas.width = 1000;
-            canvas.height = 400;
-            ctx.fillStyle = "#fff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = `40px '${font}', cursive`;
-            ctx.fillStyle = color;
-            ctx.fillText(text, 50, 100);
-            let link = document.createElement("a");
-            link.href = canvas.toDataURL("image/png");
-            link.download = "handwritten_text.png";
-            link.click();
-        }
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            let doc = new jsPDF();
-            let text = document.getElementById("textInput").value;
-            doc.text(text, 10, 10);
-            doc.save("handwritten_text.pdf");
-        }
-    </script>
+    <div class="container">
+        <img src="profile.jpg" alt="Profile Picture" class="profile-img">
+        <h1>About Me</h1>
+        <p>Hello! My name is HAR, and I am passionate about creating engaging content and exploring new ideas. 
+        I love working on innovative projects and sharing knowledge with others.</p>
+        <p>Welcome to my page, where I showcase my work and thoughts. Stay connected!</p>
+    </div>
 </body>
 </html>
