@@ -53,10 +53,22 @@
             background-color: white;
             white-space: pre-wrap;
         }
+        .page {
+            width: 80%;
+            height: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            display: none;
+        }
+        .active {
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <h1>Text to Handwritten Converter</h1>
+    <h1>Text to Handwritten Converter By HAR </h1>
     <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
     
     <label for="fontSelect">Choose Handwriting Font:</label>
@@ -87,11 +99,20 @@
         <option value="teal">Teal</option>
     </select>
     
+    <label for="pageSelect">Choose Page Style:</label>
+    <select id="pageSelect" onchange="changePage()">
+        <option value="a4">A4</option>
+        <option value="notebook">Notebook</option>
+        <option value="grid">Grid</option>
+        <option value="ruled">Ruled</option>
+        <option value="plain">Plain</option>
+    </select>
+    
     <button onclick="convertToImage()">Download as Image</button>
     <canvas id="canvas"></canvas>
     
     <h2>Preview</h2>
-    <div id="preview">Your handwritten text will appear here</div>
+    <div id="preview" class="page active"></div>
 
     <script>
         function updatePreview() {
@@ -103,6 +124,31 @@
             preview.style.fontFamily = `'${font}', cursive`;
             preview.style.color = color;
             preview.innerText = text ? text : "Your handwritten text will appear here";
+        }
+
+        function changePage() {
+            let pageType = document.getElementById("pageSelect").value;
+            let preview = document.getElementById("preview");
+            
+            switch(pageType) {
+                case "a4":
+                    preview.style.width = "80%";
+                    preview.style.height = "1000px";
+                    break;
+                case "notebook":
+                    preview.style.width = "80%";
+                    preview.style.height = "800px";
+                    preview.style.background = "linear-gradient(white 90%, lightblue 10%)";
+                    break;
+                case "grid":
+                    preview.style.background = "url('https://www.transparenttextures.com/patterns/squared-metal.png')";
+                    break;
+                case "ruled":
+                    preview.style.background = "url('https://www.transparenttextures.com/patterns/bright-squares.png')";
+                    break;
+                default:
+                    preview.style.background = "white";
+            }
         }
 
         function convertToImage() {
@@ -136,6 +182,3 @@
     </script>
 </body>
 </html>
-
-       
-           
