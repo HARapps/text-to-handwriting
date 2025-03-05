@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text to Handwritten Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Dancing+Script:wght@700&family=Indie+Flower&family=Kalam:wght@400;700&family=Permanent+Marker&family=Shadows+Into+Light&family=Zeyada&family=Reenie+Beanie&family=Courgette&family=Satisfy&display=swap');
-
+        
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -16,8 +17,14 @@
         h1 {
             color: #333;
         }
+        #logo {
+            width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+        }
         textarea {
-            width: 80%;
+            width: 90%;
             height: 150px;
             padding: 10px;
             font-size: 16px;
@@ -46,21 +53,16 @@
             padding: 20px;
             font-size: 30px;
             border: 1px solid #ccc;
-            display: inline-block;
             background-color: white;
             white-space: pre-wrap;
-        }
-        #signatureCanvas {
-            border: 2px dashed #000;
-            background: white;
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
+    <img src="logo.png" alt="Website Logo" id="logo">
+    <button onclick="location.href='index.html'">Home</button>
     <h1>Text to Handwritten Converter</h1>
     <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
-    
     <label for="fontSelect">Choose Handwriting Font:</label>
     <select id="fontSelect" onchange="updatePreview()">
         <option value="Patrick Hand">Patrick Hand</option>
@@ -74,7 +76,6 @@
         <option value="Courgette">Courgette</option>
         <option value="Satisfy">Satisfy</option>
     </select>
-    
     <label for="colorSelect">Choose Ink Color:</label>
     <select id="colorSelect" onchange="updatePreview()">
         <option value="black">Black</option>
@@ -82,96 +83,45 @@
         <option value="red">Red</option>
         <option value="green">Green</option>
         <option value="purple">Purple</option>
-        <option value="brown">Brown</option>
-        <option value="orange">Orange</option>
-        <option value="pink">Pink</option>
-        <option value="gray">Gray</option>
-        <option value="teal">Teal</option>
     </select>
-    
     <button onclick="convertToImage()">Download as Image</button>
     <button onclick="downloadPDF()">Download as PDF</button>
-    
     <h2>Preview</h2>
     <div id="preview">Your handwritten text will appear here</div>
-    
-    <h2>Signature</h2>
-    <canvas id="signatureCanvas" width="400" height="200"></canvas>
-    <button onclick="clearSignature()">Clear Signature</button>
-    <button onclick="downloadSignature()">Download Signature</button>
-    
     <script>
         function updatePreview() {
             let text = document.getElementById("textInput").value;
             let font = document.getElementById("fontSelect").value;
             let color = document.getElementById("colorSelect").value;
             let preview = document.getElementById("preview");
-
             preview.style.fontFamily = `'${font}', cursive`;
             preview.style.color = color;
             preview.innerText = text ? text : "Your handwritten text will appear here";
         }
-
         function convertToImage() {
             let canvas = document.createElement("canvas");
             let ctx = canvas.getContext("2d");
             let text = document.getElementById("textInput").value;
             let font = document.getElementById("fontSelect").value;
             let color = document.getElementById("colorSelect").value;
-            
             canvas.width = 1000;
             canvas.height = 400;
             ctx.fillStyle = "#fff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.font = `40px '${font}', cursive`;
             ctx.fillStyle = color;
-            ctx.fillText(text, 50, 50);
-            
+            ctx.fillText(text, 50, 100);
             let link = document.createElement("a");
             link.href = canvas.toDataURL("image/png");
             link.download = "handwritten_text.png";
             link.click();
         }
-
         function downloadPDF() {
-            let { jsPDF } = window.jspdf;
+            const { jsPDF } = window.jspdf;
             let doc = new jsPDF();
             let text = document.getElementById("textInput").value;
             doc.text(text, 10, 10);
             doc.save("handwritten_text.pdf");
-        }
-
-        let signatureCanvas = document.getElementById("signatureCanvas");
-        let ctx = signatureCanvas.getContext("2d");
-        let drawing = false;
-
-        signatureCanvas.addEventListener("mousedown", () => drawing = true);
-        signatureCanvas.addEventListener("mouseup", () => {
-            drawing = false;
-            ctx.beginPath();
-        });
-        signatureCanvas.addEventListener("mousemove", draw);
-
-        function draw(event) {
-            if (!drawing) return;
-            ctx.lineWidth = 2;
-            ctx.lineCap = "round";
-            ctx.strokeStyle = "black";
-            ctx.lineTo(event.offsetX, event.offsetY);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(event.offsetX, event.offsetY);
-        }
-
-        function clearSignature() {
-            ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
-        }
-
-        function downloadSignature() {
-            let link = document.createElement("a");
-            link.href = signatureCanvas.toDataURL("image/png");
-            link.download = "signature.png";
-            link.click();
         }
     </script>
 </body>
