@@ -111,8 +111,13 @@
     <button onclick="saveSignature()">Save Signature</button>
     <h2>Preview</h2>
     <div id="preview">Your handwritten text will appear here</div>
-    <p>&copy; 2025 HARAPPS. All rights reserved.</p>
-    <script>
+   <footer style="margin-top: 20px; padding: 20px; background-color: #333; color: white; text-align: center;">
+    <button onclick="location.href='contact.html'" style="background-color: #FFD700; color: black; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+        Contact Us
+    </button>
+    <p style="margin-top: 10px;">&copy; 2025 HARAPPS. All rights reserved.</p>
+</footer>
+
         function updatePreview() {
             let text = document.getElementById("textInput").value;
             let font = document.getElementById("fontSelect").value;
