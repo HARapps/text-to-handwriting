@@ -53,22 +53,15 @@
             background-color: white;
             white-space: pre-wrap;
         }
-        .page {
-            width: 80%;
-            height: 1000px;
-            margin: 20px auto;
-            padding: 20px;
+        #signatureCanvas {
+            border: 2px dashed #000;
             background: white;
-            border: 1px solid #ccc;
-            display: none;
-        }
-        .active {
-            display: block;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Text to Handwritten Converter By HAR </h1>
+    <h1>Text to Handwritten Converter</h1>
     <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
     
     <label for="fontSelect">Choose Handwriting Font:</label>
@@ -99,21 +92,18 @@
         <option value="teal">Teal</option>
     </select>
     
-    <label for="pageSelect">Choose Page Style:</label>
-    <select id="pageSelect" onchange="changePage()">
-        <option value="a4">A4</option>
-        <option value="notebook">Notebook</option>
-        <option value="grid">Grid</option>
-        <option value="ruled">Ruled</option>
-        <option value="plain">Plain</option>
-    </select>
-    
     <button onclick="convertToImage()">Download as Image</button>
+    <button onclick="downloadPDF()">Download as PDF</button>
+    
     <canvas id="canvas"></canvas>
     
     <h2>Preview</h2>
-    <div id="preview" class="page active"></div>
-
+    <div id="preview">Your handwritten text will appear here</div>
+    
+    <h2>Signature</h2>
+    <canvas id="signatureCanvas" width="400" height="200"></canvas>
+    <button onclick="clearSignature()">Clear Signature</button>
+    
     <script>
         function updatePreview() {
             let text = document.getElementById("textInput").value;
@@ -124,31 +114,6 @@
             preview.style.fontFamily = `'${font}', cursive`;
             preview.style.color = color;
             preview.innerText = text ? text : "Your handwritten text will appear here";
-        }
-
-        function changePage() {
-            let pageType = document.getElementById("pageSelect").value;
-            let preview = document.getElementById("preview");
-            
-            switch(pageType) {
-                case "a4":
-                    preview.style.width = "80%";
-                    preview.style.height = "1000px";
-                    break;
-                case "notebook":
-                    preview.style.width = "80%";
-                    preview.style.height = "800px";
-                    preview.style.background = "linear-gradient(white 90%, lightblue 10%)";
-                    break;
-                case "grid":
-                    preview.style.background = "url('https://www.transparenttextures.com/patterns/squared-metal.png')";
-                    break;
-                case "ruled":
-                    preview.style.background = "url('https://www.transparenttextures.com/patterns/bright-squares.png')";
-                    break;
-                default:
-                    preview.style.background = "white";
-            }
         }
 
         function convertToImage() {
@@ -178,6 +143,37 @@
             link.href = canvas.toDataURL("image/png");
             link.download = "handwritten_text.png";
             link.click();
+        }
+
+        function downloadPDF() {
+            let { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            let text = document.getElementById("textInput").value;
+            doc.text(text, 10, 10);
+            doc.save("handwritten_text.pdf");
+        }
+
+        let signatureCanvas = document.getElementById("signatureCanvas");
+        let ctx = signatureCanvas.getContext("2d");
+        let drawing = false;
+
+        signatureCanvas.addEventListener("mousedown", () => drawing = true);
+        signatureCanvas.addEventListener("mouseup", () => drawing = false);
+        signatureCanvas.addEventListener("mousemove", draw);
+
+        function draw(event) {
+            if (!drawing) return;
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "black";
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(event.offsetX, event.offsetY);
+        }
+
+        function clearSignature() {
+            ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
         }
     </script>
 </body>
