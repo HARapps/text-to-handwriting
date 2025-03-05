@@ -75,6 +75,13 @@
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
+        <a href="a4.html">A4 Page</a>
+        <a href="a3.html">A3 Page</a>
+        <a href="notebook.html">Notebook Page</a>
+        <a href="ipad.html">iPad Notes</a>
+        <a href="grid.html">Grid Page</a>
+        <a href="lined.html">Lined Page</a>
+        <a href="blank.html">Blank Page</a>
     </nav>
     <h1>Text to Handwritten Converter</h1>
     <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
@@ -142,23 +149,6 @@
             let text = document.getElementById("textInput").value;
             doc.text(text, 10, 10);
             doc.save("handwritten_text.pdf");
-        }
-        let signatureCanvas = document.getElementById("signatureCanvas");
-        let ctx = signatureCanvas.getContext("2d");
-        let drawing = false;
-        signatureCanvas.addEventListener("pointerdown", (e) => {
-            drawing = true;
-            ctx.beginPath();
-            ctx.moveTo(e.offsetX, e.offsetY);
-        });
-        signatureCanvas.addEventListener("pointermove", (e) => {
-            if (!drawing) return;
-            ctx.lineTo(e.offsetX, e.offsetY);
-            ctx.stroke();
-        });
-        signatureCanvas.addEventListener("pointerup", () => drawing = false);
-        function clearSignature() {
-            ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
         }
     </script>
 </body>
