@@ -3,177 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text to Handwritten Converter</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <title>Handwritten Text Converter</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Dancing+Script:wght@700&family=Indie+Flower&family=Kalam:wght@400;700&family=Permanent+Marker&family=Shadows+Into+Light&family=Zeyada&family=Reenie+Beanie&family=Courgette&family=Satisfy&display=swap');
-        
         body {
+            background-color: purple;
+            color: white;
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #4B0082;
+        }
+        #container {
+            background-color: white;
             padding: 20px;
-            color: white;
-        }
-        h1 {
-            color: #fff;
-        }
-        textarea {
-            width: 90%;
-            height: 150px;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        select, button {
-            font-size: 16px;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+            color: black;
         }
         button {
-            cursor: pointer;
-            background-color: #FFD700;
-            color: black;
+            background-color: gold;
             border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
         }
-        button:hover {
-            background-color: #DAA520;
-        }
-        #preview {
-            margin-top: 20px;
+        #footer {
+            background-color: black;
             padding: 20px;
-            font-size: 30px;
-            border: 1px solid #ccc;
-            background-color: white;
-            white-space: pre-wrap;
-            color: black;
-        }
-        .bold {
-            font-weight: bold;
-        }
-        .italic {
-            font-style: italic;
-        }
-        .underline {
-            text-decoration: underline;
-        }
-        .strikethrough {
-            text-decoration: line-through;
-        }
-        canvas {
-            border: 1px solid #ccc;
-            background-color: white;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <button onclick="location.href='index.html'">Home</button>
-    <h1>Text to Handwritten Converter</h1>
-    <textarea id="textInput" placeholder="Type your text here..." oninput="updatePreview()"></textarea><br>
-    <label for="fontSelect">Choose Handwriting Font:</label>
-    <select id="fontSelect" onchange="updatePreview()">
-        <option value="Patrick Hand">Patrick Hand</option>
-        <option value="Dancing Script">Dancing Script</option>
-        <option value="Indie Flower">Indie Flower</option>
-        <option value="Kalam">Kalam</option>
-        <option value="Permanent Marker">Permanent Marker</option>
-        <option value="Shadows Into Light">Shadows Into Light</option>
-        <option value="Zeyada">Zeyada</option>
-        <option value="Reenie Beanie">Reenie Beanie</option>
-        <option value="Courgette">Courgette</option>
-        <option value="Satisfy">Satisfy</option>
-    </select>
-    <label for="colorSelect">Choose Ink Color:</label>
-    <select id="colorSelect" onchange="updatePreview()">
-        <option value="black">Black</option>
-        <option value="blue">Blue</option>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="purple">Purple</option>
-    </select>
-    <br>
-    <button onclick="toggleStyle('bold')">Bold</button>
-    <button onclick="toggleStyle('italic')">Italic</button>
-    <button onclick="toggleStyle('underline')">Underline</button>
-    <button onclick="toggleStyle('strikethrough')">Strikethrough</button>
-    <br>
-    <button onclick="convertToImage()">Download as Image</button>
-    <button onclick="downloadPDF()">Download as PDF</button>
-    <br>
-    <h2>Signature</h2>
-    <canvas id="signatureCanvas" width="400" height="200"></canvas>
-    <br>
-    <button onclick="clearSignature()">Clear Signature</button>
-    <button onclick="saveSignature()">Save Signature</button>
-    <h2>Preview</h2>
-    <div id="preview">Your handwritten text will appear here</div>
-   
-    <p style="margin-top: 10px;">&copy; 2025 HARAPPS. All rights reserved.</p>
-</footer>
 
+    <h1>Handwritten Text Converter</h1>
+    
+    <div id="container">
+        <h3>Enter Your Text:</h3>
+        <textarea id="textInput" rows="4" cols="50"></textarea>
+        <br><br>
+        <button onclick="updatePreview()">Preview</button>
+        
+        <h3>Preview:</h3>
+        <p id="preview">Your handwritten text will appear here</p>
+        
+        <button onclick="clearPreview()">Clear Preview</button>
+    </div>
+
+    <div id="footer">
+        <button onclick="location.href='contact.html'">Contact Us</button>
+        <p>© 2025 HARAPPS. All rights reserved.</p>
+    </div>
+
+    <script>
         function updatePreview() {
             let text = document.getElementById("textInput").value;
-            let font = document.getElementById("fontSelect").value;
-            let color = document.getElementById("colorSelect").value;
             let preview = document.getElementById("preview");
-            preview.style.fontFamily = `'${font}', cursive`;
-            preview.style.color = color;
-            preview.innerText = text ? text : "Your handwritten text will appear here";
+            
+            if (text.trim() === "") {
+                preview.innerText = "Your handwritten text will appear here";
+            } else {
+                preview.innerText = text;
+            }
         }
-        function toggleStyle(style) {
-            let preview = document.getElementById("preview");
-            preview.classList.toggle(style);
-        }
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            let doc = new jsPDF();
-            let text = document.getElementById("textInput").value;
-            doc.text(text, 10, 10);
-            doc.save("handwritten_text.pdf");
-        }
-        let canvas = document.getElementById("signatureCanvas");
-        let ctx = canvas.getContext("2d");
-        let drawing = false;
-        canvas.addEventListener("touchstart", startDrawing);
-        canvas.addEventListener("touchmove", draw);
-        canvas.addEventListener("touchend", stopDrawing);
-        canvas.addEventListener("mousedown", startDrawing);
-        canvas.addEventListener("mousemove", draw);
-        canvas.addEventListener("mouseup", stopDrawing);
-        function startDrawing(event) {
-            drawing = true;
-            draw(event);
-        }
-        function stopDrawing() {
-            drawing = false;
-            ctx.beginPath();
-        }
-        function draw(event) {
-            if (!drawing) return;
-            ctx.lineWidth = 2;
-            ctx.lineCap = "round";
-            ctx.strokeStyle = "black";
-            let rect = canvas.getBoundingClientRect();
-            let x = (event.clientX || event.touches[0].clientX) - rect.left;
-            let y = (event.clientY || event.touches[0].clientY) - rect.top;
-            ctx.lineTo(x, y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-        }
-        function clearSignature() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-        function saveSignature() {
-            let link = document.createElement("a");
-            link.href = canvas.toDataURL("image/png");
-            link.download = "signature.png";
-            link.click();
+
+        function clearPreview() {
+            document.getElementById("textInput").value = "";
+            document.getElementById("preview").innerText = "Your handwritten text will appear here";
         }
     </script>
+
 </body>
 </html>
